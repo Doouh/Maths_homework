@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 void imprimirMatriz(float m[][5], int f, int c);
-float excluyente(float mr[][4], float m[][5], int f, int c);
+float excluyente(float mr[][4], int f, int c);
 float getDeterminante(float mo[][5], int f, int c);
 float distribuidor(float m[][5], int f, int c);
 
@@ -28,80 +28,68 @@ float getDeterminante(float mo[][5], int f, int c)
 // -- mr = matriz reducida
 // -- mo = matriz operable
 
-float excluyente(float mr[][4], float m[][5], int f, int c)
+float excluyente(float mr[][4], int f, int c)
 {
 	float mo[3][5];
 	int i = 1, j = 0, ii = 0, jj = 0;
 	float op1, op2, op3, d = 0;
 
-	// Copia m a mr sin la primera fila y la columna de resultado
-	/*while (i < f)
-	{
-		j = jj = 0;
-		while (j < (c - 1))
-		{
-			mr[ii][jj] = m[i][j];
-			j++, jj++;
-		}
-		i++, ii++;
-	}*/
-
-	// copia mr a mo evitando la columna 0 y la extiende
-	i = j = 0;
+	// copia mr a mo evitando la columna 0 y la fila 0 y la extiende
+	i = 0, ii = 1;
 	while (i < 3)
 	{
 		j = 0; jj = 1;
 		while (j < 5)
 		{
-			mo[i][j] = mr[i][jj];
+			mo[i][j] = mr[ii][jj];
 			if (jj == 3)
 				jj = 0;
 			j++, jj++;
 		}
-		i++;
+		i++, ii++;
 	}
 	op1 = getDeterminante(mo, 3, 5);
 	printf("V1 = %.1f\n", op1);
 
-	// copia mr a mo evitando la columna 1 y la extiende
-	i = j = 0;
+	// copia mr a mo evitando la columna 1 y la fila 0 y la extiende
+	i = 0, ii = 1;
 	while (i < 3)
 	{
 		j = 0, jj = 0;
 		while (j < 5)
 		{
-			mo[i][j] = mr[i][jj];
+			mo[i][j] = mr[ii][jj];
 			if (jj == 0)
 				jj++;
 			if (jj == 3)
 				jj = -1;
 			j++, jj++;
 		}
-		i++;
+		i++, ii++;
 	}
 	op2 = getDeterminante(mo, 3, 5);
 	printf("V2 = %.1f\n", op2);
 
-	// copia mr a mo evitando la columna 2 y la extiende
-	i = j = 0;
+	// copia mr a mo evitando la columna 2 y la fila 0 y la extiende
+	i = 0, ii = 1;
 	while (i < 3)
 	{
 		j = 0, jj = 0;
 		while (j < 5)
 		{
-			mo[i][j] = mr[i][jj];
+			mo[i][j] = mr[ii][jj];
 			if (jj == 1)
 				jj++;
 			if (jj == 3)
 				jj = -1;
 			j++, jj++;
 		}
-		i++;
+		i++, ii++;
 	}
 	op3 = getDeterminante(mo, 3, 5);
 	printf("V3 = %.1f\n", op3);
 
-	d = ((m[0][0] * op1) + ((m[0][1] * -1) * op2) + (m[0][2] * op3));
+	d = ((mr[0][0] * op1) + ((mr[0][1] * -1) * op2) + (mr[0][2] * op3));
 
 	return (d);
 }
@@ -130,22 +118,28 @@ void imprimirMatriz(float m[][5], int f, int c)
 
 float distribuidor(float m[][5], int f, int c)
 {
-	float mr[3][4];
-	int i = 1, j = 0, ii = 0, jj = 0;
+	float mr[4][4];
+	int i = 0, j = 0;
+	float ds, dt1, dt2, dt3, dt4;
 
 	// Copia m a mr sin la primera fila y la columna de resultado
 	while (i < f)
 	{
-		j = jj = 0;
+		j = 0;
 		while (j < (c - 1))
 		{
-			mr[ii][jj] = m[i][j];
-			j++, jj++;
+			mr[i][j] = m[i][j];
+			j++;
 		}
-		i++, ii++;
+		i++;
 	}
 
-	return (excluyente(mr, m, 3, 4));
+	ds = excluyente(mr, 4, 4);
+
+	// Cambia la matriz agregándole en la primera columna los valores de resultado
+	
+
+	return (ds);
 }
 
 // Variables:
