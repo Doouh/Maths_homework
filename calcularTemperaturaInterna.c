@@ -3,7 +3,7 @@
 void imprimirMatriz(float m[][5], int f, int c);
 float excluyente(float mr[][4], int f, int c);
 float getDeterminante(float mo[][5], int f, int c);
-float distribuidor(float m[][5], int f, int c);
+void distribuidor(float m[][5], int f, int c, float *r);
 
 // Variables
 //
@@ -49,7 +49,6 @@ float excluyente(float mr[][4], int f, int c)
 		i++, ii++;
 	}
 	op1 = getDeterminante(mo, 3, 5);
-	printf("V1 = %.1f\n", op1);
 
 	// copia mr a mo evitando la columna 1 y la fila 0 y la extiende
 	i = 0, ii = 1;
@@ -68,7 +67,6 @@ float excluyente(float mr[][4], int f, int c)
 		i++, ii++;
 	}
 	op2 = getDeterminante(mo, 3, 5);
-	printf("V2 = %.1f\n", op2);
 
 	// copia mr a mo evitando la columna 2 y la fila 0 y la extiende
 	i = 0, ii = 1;
@@ -87,7 +85,6 @@ float excluyente(float mr[][4], int f, int c)
 		i++, ii++;
 	}
 	op3 = getDeterminante(mo, 3, 5);
-	printf("V3 = %.1f\n", op3);
 
 	d = ((mr[0][0] * op1) + ((mr[0][1] * -1) * op2) + (mr[0][2] * op3));
 
@@ -116,13 +113,13 @@ void imprimirMatriz(float m[][5], int f, int c)
 	}
 }
 
-float distribuidor(float m[][5], int f, int c)
+void distribuidor(float m[][5], int f, int c, float *r)
 {
-	float mr[4][4];
-	int i = 0, j = 0;
-	float ds, dt1, dt2, dt3, dt4;
+	float mr[4][4], mo[3][5];
+	int i = 0, j = 0, jj, ii;
+	float ds, dt1, dt2, dt3, dt4, dt41, dt42;
 
-	// Copia m a mr sin la primera fila y la columna de resultado
+	// Copia m a mr sin la columna de resultado
 	while (i < f)
 	{
 		j = 0;
@@ -136,10 +133,96 @@ float distribuidor(float m[][5], int f, int c)
 
 	ds = excluyente(mr, 4, 4);
 
-	// Cambia la matriz agregándole en la primera columna los valores de resultado
-	
+	// Copia m a mr cambiando la primera columna por la de resultado
+	i = 0;
+	while (i < f)
+	{
+		j = 0;
+		while (j < (c - 1))
+		{
+			if (j == 0)
+				mr[i][j] = m[i][4];
+			else
+				mr[i][j] = m[i][j];
+			j++;
+		}
+		i++;
+	}
 
-	return (ds);
+	dt1 = excluyente(mr, 4, 4);
+
+	i = 0;
+	while (i < f)
+	{
+		j = 0;
+		while (j < (c - 1))
+		{
+			if (j == 1)
+				mr[i][j] = m[i][4];
+			else
+				mr[i][j] = m[i][j];
+			j++;
+		}
+		i++;
+	}
+
+	dt2 = excluyente(mr, 4, 4);
+
+	i = 0;
+	while (i < f)
+	{
+		j = 0;
+		while (j < (c - 1))
+		{
+			if (j == 2)
+				mr[i][j] = m[i][4];
+			else
+				mr[i][j] = m[i][j];
+			j++;
+		}
+		i++;
+	}
+
+	dt3 = excluyente(mr, 4, 4);
+
+	i = 0;
+	while (i < f)
+	{
+		j = 0;
+		while (j < (c - 1))
+		{
+			if (j == 3)
+				mr[i][j] = m[i][4];
+			else
+				mr[i][j] = m[i][j];
+			j++;
+		}
+		i++;
+	}
+
+	dt41 = excluyente(mr, 4, 4);
+
+	i = 0, ii = 1;
+	while (i < f)
+	{
+		j = jj = 0;
+		while (j < 5)
+		{
+			mo[i][j] = m[ii][jj];
+			if (j == 2)
+				jj = -1;
+			j++, jj++;
+		}
+		i++, ii++;
+	}
+
+	dt42 = (getDeterminante(mo, 3, 5)) * (m[0][4] * -1);	
+	dt4 = dt41 + dt42;
+
+	r[0] = dt1 / ds;
+	r[1] = dt2 / ds;
+	r[2] = dt3 / ds;
+	r[3] = dt4 / ds;
 }
 
 // Variables:
@@ -164,14 +247,18 @@ int main(void)
 	      te45 = te4 + te5,
 	      te67 = te6 + te7;
 	float mp[4][5];
+	float r[4];
 
 	mp[0][0] = 4,  mp[0][1] = -1, mp[0][2] = -1,  mp[0][3] = 0, mp[0][4] = te18,
 	mp[1][0] = -1, mp[1][1] = 4,  mp[1][2] = 0, mp[1][3] = -1,  mp[1][4] = te23,
 	mp[2][0] = -1,  mp[2][1] = 0, mp[2][2] = 4,  mp[2][3] = -1, mp[2][4] = te67,
 	mp[3][0] = 0, mp[3][1] = -1,  mp[3][2] = -1, mp[3][3] = 4,  mp[3][4] = te45;
 
-	printf("Determinante = %.2f\n", distribuidor(mp, 4, 5));
-//	imprimirMatriz(mp, 4, 5);
+	distribuidor(mp, 4, 5, &r[0]);
+	printf("T1 = %.1f\n", r[0]);
+	printf("T2 = %.1f\n", r[1]);
+	printf("T3 = %.1f\n", r[2]);
+	printf("T4 = %.1f\n", r[3]);
 }
 
 
